@@ -93,6 +93,12 @@ function islandora_collection_search_admin_form($form, &$form_state) {
     '#description' => t("When selected this will display the current collection's label for display as opposed to this collection"),
     '#default_value' => variable_get('islandora_collection_search_display_label', FALSE),
   );
+  $form['collections']['auto_opt_in'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Automatically add new collections to the list ?'),
+    '#description' => t("When selected, this will cause newly ingested lists to appear in the collection selector. Effectively checking the box in the list above..."),
+    '#default_value' => variable_get('islandora_collection_search_auto_opt_in', FALSE),
+  );
   $form['collections']['advanced_search_alter'] = array(
     '#type' => 'checkbox',
     '#title' => t('Display a searchable collection field in advanced search?'),
@@ -121,4 +127,5 @@ function islandora_collection_search_admin_form_submit(&$form, &$form_state) {
   variable_set('islandora_collection_search_searchable_collections', $form_state['values']['collection_selection']);
   variable_set('islandora_collection_search_advanced_search_alter', $form_state['values']['advanced_search_alter']);
   variable_set('islandora_collection_search_retain_search_values', $form_state['values']['retain_values_on_search_results']);
+  variable_set('islandora_collection_search_auto_opt_in', $form_state['values']['auto_opt_in']);
 }

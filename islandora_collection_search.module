@@ -128,3 +128,25 @@ function islandora_collection_search_append_collection_pid($form, &$form_state) 
     $form_state['redirect'][1]['query']['pid'] = $form_state['values']['collections'];
   }
 }
+
+
+/**
+ * Implements hook_islandora_object_ingested().
+ *
+ * On object ingestion register the collection eligible for collection search.
+ */
+function islandora_collection_search_islandora_object_ingested(AbstractObject $object) {
+  $auto_opt_in = variable_get('islandora_collection_search_auto_opt_in', false);
+  if(!$auto_opt_in){
+      return;
+  }
+  module_load_include('inc', 'islandora', 'includes/derivatives');
+  $collections = variable_get('islandora_collection_search_searchable_collections', array());
+  $object_models = $object->models;
+  $exists_already = !in_array($object->id, $collections);
+  $is_collection = in_array('islandora:collectionCModel', $object_models);
+  if(!$exists_already && $is_collection){
+      $collections[$object->id] = $object->id;
+      variable_set('islandora_collection_search_searchable_collections', $collections);
+  }
+}
