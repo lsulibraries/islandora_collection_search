@@ -17,6 +17,12 @@ function islandora_collection_search_admin_form($form, &$form_state) {
     '#description' => t('The Solr field that contains ancestor data.'),
     '#default_value' => variable_get('islandora_collection_search_ancestor_field', 'ancestors_ms'),
   );
+  $form['use_namespace_prefix_not_ancestor_relation'] = array(
+    '#title' => t('User ns prefix, not ancestor.'),
+    '#type' => 'checkbox',
+    '#description' => t('Workaround to use when Ancestor field is missing'),
+    '#default_value' => variable_get('islandora_collection_search_use_namespace_prefix', FALSE),
+  );
   $form['gsearch'] = array(
     '#title' => t('GSearch Config'),
     '#type' => 'fieldset',
@@ -117,6 +123,7 @@ function islandora_collection_search_admin_form($form, &$form_state) {
  */
 function islandora_collection_search_admin_form_submit(&$form, &$form_state) {
   variable_set('islandora_collection_search_ancestor_field', $form_state['values']['ancestor_field']);
+  variable_set('islandora_collection_search_use_namespace_prefix', $form_state['values']['use_namespace_prefix_not_ancestor_relation']);
   variable_set('islandora_collection_search_gsearch_endpoint', $form_state['values']['islandora_collection_search_gsearch_endpoint']);
   variable_set('islandora_collection_search_gsearch_user', $form_state['values']['islandora_collection_search_gsearch_user']);
   variable_set('islandora_collection_search_display_label', $form_state['values']['collection_label']);

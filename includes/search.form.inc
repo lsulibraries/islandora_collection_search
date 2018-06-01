@@ -126,11 +126,15 @@ function islandora_collection_search_form_submit($form, &$form_state) {
   $collection_select = isset($form_state['values']['collection_select']) ?
     $form_state['values']['collection_select'] :
     FALSE;
-
   // Using edismax by default.
   $query = array('type' => 'edismax');
   if (isset($collection_select) && $collection_select !== 'all') {
-    $query['cp'] = $collection_select;
+    if(!variable_get('islandora_collection_search_use_namespace_prefix', FALSE)) {
+      $query['cp'] = $collection_select;
+    }
+    else{
+      $query['cp'] = explode(':', $collection_select)[0] . '*';
+    }
   }
   drupal_goto('islandora/search/' . $search_string, array('query' => $query));
 }

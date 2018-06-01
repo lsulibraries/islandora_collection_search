@@ -46,12 +46,27 @@ function islandora_collection_search_islandora_solr_query($islandora_solr_query)
 
   // Grab the collection pid and add it as a solr query filter.
   $collection_pid = $_GET['cp'];
-  $ancestor_field = variable_get('islandora_collection_search_ancestor_field', 'ancestors_ms');
-  $filter = format_string('!field:"!value"', array(
-    '!field' => $ancestor_field,
-    '!value' => $collection_pid,
-  ));
-  $islandora_solr_query->solrParams['fq'][] = $filter;
+  if(variable_get('islandora_collection_search_use_namespace_prefix', FALSE)) {
+    $filter = format_string('!field:!value', array(
+      '!field' => 'PID',
+      '!value' => $collection_pid,
+    ));
+    $islandora_solr_query->solrParams['fq'][] = $filter;
+    // add another filter to elide the collection objects from results.
+    $filter = format_string('-!field:!value', array(
+      '!field' => 'PID',
+      '!value' => '*collection',
+    ));
+    $islandora_solr_query->solrParams['fq'][] = $filter;
+  }
+  else {
+    $ancestor_field = variable_get('islandora_collection_search_ancestor_field', 'ancestors_ms');
+    $filter = format_string('!field:"!value"', array(
+      '!field' => $ancestor_field,
+      '!value' => $collection_pid,
+    ));
+    $islandora_solr_query->solrParams['fq'][] = $filter;
+  }
 }
 
 /**
